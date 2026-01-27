@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { BookOpen, Sparkles, User, BookMarked, Target, Lightbulb, TrendingUp, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Sparkles, User, BookMarked, Lightbulb, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import Navbar from '../components/Navbar';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 interface BookData {
   title: string;
@@ -22,7 +25,13 @@ const SummaryPage = () => {
   const [showResults, setShowResults] = useState(false);
   const [bookData, setBookData] = useState<BookData | null>(null);
   const [error, setError] = useState('');
+  const { title } = useParams<{ title: string }>();
 
+  useEffect(() => {
+  if (title) {
+    setBookTitle(decodeURIComponent(title));
+  }
+}, [title]);
   const handleSubmit = async () => {
     if (!bookTitle || !author) return;
     
@@ -48,73 +57,91 @@ const SummaryPage = () => {
       console.log('Sending request to Gemini...');
 
       const response = await ai.models.generateContent({
-        model:  "gemini-2.5-flash",
-        contents: `You are a professional book analyst. Provide a comprehensive, structured analysis of the book "${bookTitle}" by ${author}.
-
-Return your response in valid JSON format with this exact structure:
-{
-  "title": "${bookTitle}",
-  "author": "${author}",
-  "foreword": "A comprehensive 3-4 sentence overview of the book's main premise, what it covers, and its significance",
-  "whoIsItFor": [
-    "Detailed description of first target audience",
-    "Detailed description of second target audience",
-    "Detailed description of third target audience",
-    "Detailed description of fourth target audience"
-  ],
-  "keyTakeaways": [
-    {
-      "title": "First major concept or principle",
-      "description": "Detailed explanation of this concept (2-3 sentences)"
-    },
-    {
-      "title": "Second major concept or principle",
-      "description": "Detailed explanation of this concept (2-3 sentences)"
-    },
-    {
-      "title": "Third major concept or principle",
-      "description": "Detailed explanation of this concept (2-3 sentences)"
-    },
-    {
-      "title": "Fourth major concept or principle",
-      "description": "Detailed explanation of this concept (2-3 sentences)"
-    },
-    {
-      "title": "Fifth major concept or principle",
-      "description": "Detailed explanation of this concept (2-3 sentences)"
-    }
-  ],
-  "actionableSteps": [
-    "Specific, practical step readers can implement immediately",
-    "Another concrete action with clear instructions",
-    "Third actionable step with details",
-    "Fourth practical implementation step",
-    "Fifth actionable takeaway",
-    "Sixth practical step",
-    "Seventh implementation strategy"
-  ],
-  "coreConcepts": [
-    "Memorable quote or principle from the book",
-    "Another key insight or principle",
-    "Third core concept or quote",
-    "Fourth essential principle"
-  ]
-}
-
-IMPORTANT: 
-- Return ONLY valid JSON, no additional text or markdown formatting
-- Make the content comprehensive and insightful
-- Ensure all descriptions are detailed and valuable
-- Base this on the actual book content if you know it
-- If you don't know the book, indicate this in the foreword`
+        model: "gemini-2.5-flash",
+        contents: `
+      You are a senior literary analyst and professional nonfiction editor producing deep, accurate book analyses for serious readers.
+      
+      Your task is to analyze the book "${bookTitle}" by ${author} with depth, specificity, and accuracy.
+      
+      This is NOT a surface summary. Avoid generic phrasing, clichés, or vague advice. Demonstrate familiarity with the book’s actual arguments, frameworks, and intent.
+      
+      CRITICAL OUTPUT RULES:
+      - Return ONLY a single valid JSON object
+      - Do NOT include markdown, explanations, comments, headings, or extra text
+      - Do NOT include separators, special characters, or trailing content
+      - The response MUST begin with { and MUST end with }
+      - Ensure the JSON parses correctly
+      
+      Use EXACTLY the following structure and field names:
+      
+      {
+        "title": "${bookTitle}",
+        "author": "${author}",
+        "foreword": "A 3-4 sentence, high-density overview explaining the book’s central thesis, the problem it addresses, how the author approaches it, and why the book matters.",
+        "whoIsItFor": [
+          "Clearly defined audience with goals, challenges, and relevance",
+          "Second distinct audience with different motivations",
+          "Third audience with professional or practical relevance",
+          "Fourth audience that benefits selectively or indirectly"
+        ],
+        "keyTakeaways": [
+          {
+            "title": "Specific concept or framework from the book",
+            "description": "2-3 sentences explaining how it works, why it matters, and its role in the book."
+          },
+          {
+            "title": "Second major principle",
+            "description": "2-3 sentences with concrete reasoning or examples."
+          },
+          {
+            "title": "Third key insight",
+            "description": "Explain why this insight is non-obvious or impactful."
+          },
+          {
+            "title": "Fourth core concept",
+            "description": "Describe how it supports the book’s central thesis."
+          },
+          {
+            "title": "Fifth important takeaway",
+            "description": "Highlight its practical or philosophical implications."
+          }
+        ],
+        "actionableSteps": [
+          "Concrete action directly derived from the book’s ideas",
+          "Second step with context on when and why to apply it",
+          "Third implementation reflecting the author’s thinking",
+          "Fourth realistic habit or process change",
+          "Fifth applied action tied to a real situation",
+          "Sixth step requiring effort or reflection",
+          "Seventh long-term application strategy"
+        ],
+        "coreConcepts": [
+          "Central principle or distilled idea from the book",
+          "Second foundational concept reinforced throughout",
+          "Third belief shaping the author’s worldview",
+          "Final principle capturing the book’s philosophy"
+        ]
+      }
+      
+      ACCURACY REQUIREMENTS:
+      - Prefer accuracy over creativity
+      - Do NOT invent quotes, studies, or facts
+      - If you do not reliably know this book:
+        - State this clearly in the foreword
+        - Keep analysis high-level and cautious
+      - Validate internally that the output is valid JSON before returning
+      
+      Return ONLY the JSON object.
+      `
       });
+      
+      
 
       console.log('Response received:', response);
 
       const generatedText = response.text;
       console.log('Generated text:', generatedText);
-      
-      // Extract JSON from the response (handle markdown code blocks)
+    
       let jsonText = generatedText.trim();
       if (jsonText.startsWith('```json')) {
         jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
@@ -151,23 +178,8 @@ IMPORTANT:
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Navigation */}
-      <nav className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-7 h-7 text-blue-600" />
-            <span className="text-xl font-semibold text-slate-900">BookBreak</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-slate-600 hover:text-slate-900 text-sm font-medium">Library</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 text-sm font-medium">Dashboard</a>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Account</button>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar />
       <div className="max-w-5xl mx-auto px-6 py-12">
-        {/* Search Form */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
           <h1 className="text-2xl font-bold text-slate-900 mb-6">Get Book Summary</h1>
           <div className="space-y-5">
@@ -233,7 +245,6 @@ IMPORTANT:
         </div>
         {showResults && bookData && (
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-            {/* Header */}
             <div className="bg-slate-50 border-b border-slate-200 px-8 py-6">
               <h2 className="text-3xl font-bold text-slate-900 mb-2">{bookData.title}</h2>
               <p className="text-lg text-slate-600">by {bookData.author}</p>
