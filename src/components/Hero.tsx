@@ -6,7 +6,8 @@ function Hero() {
   const [bookTitle, setBookTitle] = useState("")
   const navigate = useNavigate()
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault()
     if (!bookTitle.trim()) return
     navigate(`/summary/${encodeURIComponent(bookTitle)}`)
   }
