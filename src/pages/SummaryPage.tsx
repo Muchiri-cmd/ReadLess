@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  BookOpen,
-  Sparkles,
-  User,
-  BookMarked,
-  Target,
-  Lightbulb,
-  TrendingUp,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
 import Navbar from "../components/Navbar";
 import type { BookData } from "../types";
@@ -63,6 +52,9 @@ const SummaryPage = () => {
       const generatedText = response.text;
       console.log("Generated text:", generatedText);
 
+      if (!generatedText) {
+        throw new Error("Generated text is undefined");
+      }
       let jsonText = generatedText.trim();
       if (jsonText.startsWith("```json")) {
         jsonText = jsonText.replace(/```json\n?/g, "").replace(/```\n?$/g, "");
