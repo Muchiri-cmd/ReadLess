@@ -1,8 +1,4 @@
-
-export const buildPrompt = (
-  bookTitle: string,
-  author: string
-) => {
+export const buildPrompt = (bookTitle: string, author: string) => {
   return `You are a professional book analyst. Provide a comprehensive, structured analysis of the book "${bookTitle}" by ${author}.
 
 Return your response in valid JSON format with this exact structure:
@@ -63,6 +59,5 @@ IMPORTANT:
 - Make the content comprehensive and insightful
 - Ensure all descriptions are detailed and valuable
 - Base this on the actual book content if you know it
-- If you don't know the book, indicate this in the foreword`
-}
-
+- If you don't know the book, indicate this in the foreword`;
+};

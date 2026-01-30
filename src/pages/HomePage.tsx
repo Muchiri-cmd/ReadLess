@@ -1,27 +1,24 @@
-
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Features from '../components/Features';
-import Workings from '../components/Workings';
-import CallToAction from '../components/CallToAction';
-import Footer from '../components/Footer';
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import Features from "../components/Features";
+import Workings from "../components/Workings";
+import CallToAction from "../components/CallToAction";
+import Footer from "../components/Footer";
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-white">
-    <Navbar/>
+      <Navbar />
 
-    <Hero  />
+      <Hero />
 
-    <Features />
+      <Features />
 
-    <Workings />
+      <Workings />
 
-    <CallToAction />
+      <CallToAction />
 
-    <Footer />
-
-     
+      <Footer />
     </div>
   );
 };

@@ -1,18 +1,17 @@
-
-import type { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from "react";
 
 export interface BookData {
+  title: string;
+  author: string;
+  foreword: string;
+  whoIsItFor: string[];
+  keyTakeaways: Array<{
     title: string;
-    author: string;
-    foreword: string;
-    whoIsItFor: string[];
-    keyTakeaways: Array<{
-      title: string;
-      description: string;
-    }>;
-    actionableSteps: string[];
-    coreConcepts: string[];
-  }
+    description: string;
+  }>;
+  actionableSteps: string[];
+  coreConcepts: string[];
+}
 
 export interface SearchFormProps {
   bookTitle: string;
@@ -25,21 +24,48 @@ export interface SearchFormProps {
 }
 
 export interface KeyTakeaway {
-    title: string;
-    description: string;
+  title: string;
+  description: string;
 }
 
 export interface BookData {
-    title: string;
-    author: string;
-    foreword: string;
-    whoIsItFor: string[];
-    keyTakeaways: KeyTakeaway[];
-    actionableSteps: string[]; 
-    coreConcepts: string[]; 
+  title: string;
+  author: string;
+  foreword: string;
+  whoIsItFor: string[];
+  keyTakeaways: KeyTakeaway[];
+  actionableSteps: string[];
+  coreConcepts: string[];
 }
 
 export interface SummaryCardProps {
-    bookData: BookData;
-  }
-  
+  bookData: BookData;
+}
+
+export interface BookData {
+  title: string;
+  author: string;
+  foreword: string;
+  whoIsItFor: string[];
+  keyTakeaways: Array<{
+    title: string;
+    description: string;
+  }>;
+  actionableSteps: string[];
+  coreConcepts: string[];
+}
+
+export interface SummaryCardProps {
+  bookData: BookData;
+}
+
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  bookData: BookData;
+}

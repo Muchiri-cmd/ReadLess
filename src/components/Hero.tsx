@@ -1,16 +1,16 @@
-import { NotebookText, ArrowRight } from "lucide-react"
-import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { NotebookText, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Hero() {
-  const [bookTitle, setBookTitle] = useState("")
-  const navigate = useNavigate()
+  const [bookTitle, setBookTitle] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault()
-    if (!bookTitle.trim()) return
-    navigate(`/summary/${encodeURIComponent(bookTitle)}`)
-  }
+    e?.preventDefault();
+    if (!bookTitle.trim()) return;
+    navigate(`/summary/${encodeURIComponent(bookTitle)}`);
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-6 pt-20 pb-16">
@@ -52,7 +52,7 @@ function Hero() {
         </p>
       </div>
     </section>
-  )
+  );
 }
 
-export default Hero
+export default Hero;

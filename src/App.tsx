@@ -1,7 +1,6 @@
-
-import { BrowserRouter,Routes,Route } from "react-router-dom"
-import HomePage from "./pages/HomePage"
-import SummaryPage from "./pages/SummaryPage"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import SummaryPage from "./pages/SummaryPage";
 
 const App = () => {
   return (
@@ -12,8 +11,7 @@ const App = () => {
         <Route path="/summary/:title" element={<SummaryPage />} />
       </Routes>
     </BrowserRouter>
-   
-  )
-}
+  );
+};
 
-export default App
+export default App;
