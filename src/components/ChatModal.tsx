@@ -79,7 +79,7 @@ Keep your response conversational and under 150 words unless more detail is spec
         contents: buildChatPrompt(userMessage),
       });
 
-      const aiResponse = response.text.trim();
+      const aiResponse = (response.text ?? "").trim();
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: aiResponse },
